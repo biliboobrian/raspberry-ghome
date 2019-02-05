@@ -14,6 +14,7 @@ from google.assistant.library.file_helpers import existing_file
 
 GPIO.setmode(GPIO.BCM)
 GPIO.setup(25, GPIO.OUT)
+
 def process_event(event):
     """Pretty prints events.
     Prints all events that occur with two spaces between each new
