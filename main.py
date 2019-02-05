@@ -7,13 +7,10 @@ import os.path
 import json
 
 import google.oauth2.credentials
-import RPi.GPIO as GPIO
 from google.assistant.library import Assistant
 from google.assistant.library.event import EventType
 from google.assistant.library.file_helpers import existing_file
 
-GPIO.setmode(GPIO.BCM)
-GPIO.setup(25, GPIO.OUT)
 
 def process_event(event):
     """Pretty prints events.
@@ -24,14 +21,12 @@ def process_event(event):
     """
     if event.type == EventType.ON_CONVERSATION_TURN_STARTED:
         print()
-        GPIO.output(25,True)
 
     print(event)
 
     if (event.type == EventType.ON_CONVERSATION_TURN_FINISHED and
             event.args and not event.args['with_follow_on_turn']):
         print()
-        GPIO.output(25,False)
 
 
 def main():
