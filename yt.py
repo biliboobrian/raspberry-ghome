@@ -3,7 +3,7 @@
 import pafy
 import vlc
 
-url = "https://www.youtube.com/watch?v=bMt47wvK6u0"
+url = "https://www.youtube.com/watch?v=cvRbhpvnUuc"
 video = pafy.new(url)
 best = video.getbestaudio()
 playurl = best.url
