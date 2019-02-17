@@ -65,7 +65,7 @@ def process_event(assistant, event):
             event.args and not event.args['with_follow_on_turn']):
         print()
         print('Relance la musique')      
-        vlc_player.set_pause(False)
+        vlc_player.play()
 
     if event.type == EventType.ON_RECOGNIZING_SPEECH_FINISHED and event.args:
         print('You said:', event.args['text'])
