@@ -41,6 +41,7 @@ def play_music(name):
     if meta:
         info = meta['entries'][0]
         vlc_player.set_media(vlc_instance.media_new(info['url']))
+        vlc_player.audio_set_volume(volume)
         print('Now playing ' + re.sub(r'[^\s\w]', '', info['title']))
         vlc_player.play()
 
@@ -72,7 +73,7 @@ def process_event(assistant, event):
             assistant.stop_conversation()
             play_music(text[5:])
         elif text.startswith('change le volume à '):
-            print('ENTER VLC CHANGE LEVEL')
+            print('ENTER VLC CHANGE LEVEL TO ', text[5:])
             assistant.stop_conversation()
             change_volume(int(text[5:]))
         elif text.startswith('stoppe la musique'):
