@@ -45,8 +45,6 @@ def play_music(name):
         vlc_player.set_media(vlc_instance.media_new(info['url']))
         print('Je joue :' + re.sub(r'[^\s\w]', '', info['title']))
         vlc_player.play()
-        print('Changement du volume à ', volume)
-        vlc_player.audio_set_volume(volume)
 
 def process_event(assistant, event):
     """Pretty prints events.
@@ -57,8 +55,8 @@ def process_event(assistant, event):
     """
     if event.type == EventType.ON_CONVERSATION_TURN_STARTED:
         if vlc_player.get_state() == vlc.State.Playing:  
-            print('Changement du volume à 30')      
-            vlc_player.audio_set_volume(30)
+            print('Pause de la musique')      
+            vlc_player.set_pause(True)
         print()
 
     print(event)
@@ -67,7 +65,8 @@ def process_event(assistant, event):
             event.args and not event.args['with_follow_on_turn']):
         print()
         if vlc_player.get_state() == vlc.State.Playing:
-            vlc_player.audio_set_volume(volume)
+            print('Relance la musique')      
+            vlc_player.set_pause(False)
 
     if event.type == EventType.ON_RECOGNIZING_SPEECH_FINISHED and event.args:
         print('You said:', event.args['text'])
