@@ -74,7 +74,7 @@ def process_event(assistant, event):
         elif text.startswith('change le volume à '):
             print('ENTER VLC CHANGE LEVEL')
             assistant.stop_conversation()
-            change_volume(text[5:])
+            change_volume(int(text[5:]))
         elif text.startswith('stoppe la musique'):
             assistant.stop_conversation()
             print('STOP CURRENT PLAYBACK ON VLC')
