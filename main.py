@@ -25,9 +25,11 @@ vlc_instance = vlc.get_default_instance()
 vlc_player = vlc_instance.media_player_new()
 volume = 100
 
-def change_volume(level):
+def change_volume(level):   
+    print('changement du volume à ', level)  
     volume = level
-    if vlc_player.get_state() == vlc.State.Playing:        
+    if vlc_player.get_state() == vlc.State.Playing:   
+        print('changement du volume à ', volume)     
         vlc_player.audio_set_volume(volume)
 
 def play_music(name):
@@ -35,13 +37,13 @@ def play_music(name):
         with youtube_dl.YoutubeDL(ydl_opts) as ydl:
             meta = ydl.extract_info(name, download=False)
     except Exception:
-        print('Sorry, I can\'t find that song.')
+        print('Je ne peux pas trouver cette musique.')
         return
 
     if meta:
         info = meta['entries'][0]
         vlc_player.set_media(vlc_instance.media_new(info['url']))
-        print('Now playing ' + re.sub(r'[^\s\w]', '', info['title']))
+        print('Je joue :' + re.sub(r'[^\s\w]', '', info['title']))
         vlc_player.play()
         print('Changement du volume à ', volume)
         vlc_player.audio_set_volume(volume)
@@ -75,9 +77,9 @@ def process_event(assistant, event):
             assistant.stop_conversation()
             play_music(text[5:])
         elif text.startswith('change le volume à '):
-            print('ENTER VLC CHANGE LEVEL TO ', text[20:])
+            print('ENTER VLC CHANGE LEVEL TO ', text[19:])
             assistant.stop_conversation()
-            change_volume(int(text[20:]))
+            change_volume(int(text[19:]))
         elif text.startswith('stoppe la musique'):
             assistant.stop_conversation()
             print('STOP CURRENT PLAYBACK ON VLC')
