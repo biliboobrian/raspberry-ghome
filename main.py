@@ -53,20 +53,19 @@ def process_event(assistant, event):
     Args:
         event(event.Event): The current event to process.
     """
+    print(event)
+
     if event.type == EventType.ON_CONVERSATION_TURN_STARTED:
         if vlc_player.get_state() == vlc.State.Playing:  
             print('Pause de la musique')      
             vlc_player.set_pause(True)
         print()
 
-    print(event)
-
     if (event.type == EventType.ON_CONVERSATION_TURN_FINISHED and
             event.args and not event.args['with_follow_on_turn']):
         print()
-        if vlc_player.get_state() == vlc.State.Playing:
-            print('Relance la musique')      
-            vlc_player.set_pause(False)
+        print('Relance la musique')      
+        vlc_player.set_pause(False)
 
     if event.type == EventType.ON_RECOGNIZING_SPEECH_FINISHED and event.args:
         print('You said:', event.args['text'])
@@ -82,11 +81,9 @@ def process_event(assistant, event):
         elif text.startswith('stoppe la musique'):
             assistant.stop_conversation()
             print('STOP CURRENT PLAYBACK ON VLC')
-            if vlc_player.get_state() == vlc.State.Playing:
-                vlc_player.stop()
+            vlc_player.stop()
         else:
-            if vlc_player.get_state() == vlc.State.Playing:
-                vlc_player.stop()
+            vlc_player.stop()
 
 def main():
     parser = argparse.ArgumentParser(
