@@ -23,7 +23,12 @@ ydl_opts = {
 }
 vlc_instance = vlc.get_default_instance()
 vlc_player = vlc_instance.media_player_new()
+volume = 100
 
+def play_music(level):
+    volume = level
+    if vlc_player.get_state() == vlc.State.Playing:        
+        vlc_player.audio_set_volume(volume)
 
 def play_music(name):
     try:
@@ -47,6 +52,8 @@ def process_event(assistant, event):
         event(event.Event): The current event to process.
     """
     if event.type == EventType.ON_CONVERSATION_TURN_STARTED:
+        if vlc_player.get_state() == vlc.State.Playing:        
+            vlc_player.audio_set_volume(30)
         print()
 
     print(event)
@@ -54,6 +61,8 @@ def process_event(assistant, event):
     if (event.type == EventType.ON_CONVERSATION_TURN_FINISHED and
             event.args and not event.args['with_follow_on_turn']):
         print()
+        if vlc_player.get_state() == vlc.State.Playing:
+            vlc_player.audio_set_volume(volume)
 
     if event.type == EventType.ON_RECOGNIZING_SPEECH_FINISHED and event.args:
         print('You said:', event.args['text'])
@@ -62,6 +71,15 @@ def process_event(assistant, event):
             print('ENTER VLC ASSISTANT PROCESS')
             assistant.stop_conversation()
             play_music(text[5:])
+        if text.startswith('change le volume à '):
+            print('ENTER VLC ASSISTANT PROCESS')
+            assistant.stop_conversation()
+            change_volume(text[5:])
+        if text.startswith('stop la musique'):
+            assistant.stop_conversation()
+            print('STOP CURRENT PLAYBACK ON VLC')
+            if vlc_player.get_state() == vlc.State.Playing:
+                vlc_player.stop()
 
 def main():
     parser = argparse.ArgumentParser(
