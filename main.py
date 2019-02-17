@@ -41,9 +41,10 @@ def play_music(name):
     if meta:
         info = meta['entries'][0]
         vlc_player.set_media(vlc_instance.media_new(info['url']))
-        vlc_player.audio_set_volume(volume)
         print('Now playing ' + re.sub(r'[^\s\w]', '', info['title']))
         vlc_player.play()
+        print('Changement du volume à ', volume)
+        vlc_player.audio_set_volume(volume)
 
 def process_event(assistant, event):
     """Pretty prints events.
@@ -53,7 +54,8 @@ def process_event(assistant, event):
         event(event.Event): The current event to process.
     """
     if event.type == EventType.ON_CONVERSATION_TURN_STARTED:
-        if vlc_player.get_state() == vlc.State.Playing:        
+        if vlc_player.get_state() == vlc.State.Playing:  
+            print('Changement du volume à 30')      
             vlc_player.audio_set_volume(30)
         print()
 
@@ -73,9 +75,9 @@ def process_event(assistant, event):
             assistant.stop_conversation()
             play_music(text[5:])
         elif text.startswith('change le volume à '):
-            print('ENTER VLC CHANGE LEVEL TO ', text[5:])
+            print('ENTER VLC CHANGE LEVEL TO ', text[19:])
             assistant.stop_conversation()
-            change_volume(int(text[5:]))
+            change_volume(int(text[19:]))
         elif text.startswith('stoppe la musique'):
             assistant.stop_conversation()
             print('STOP CURRENT PLAYBACK ON VLC')
