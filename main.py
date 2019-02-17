@@ -25,7 +25,7 @@ vlc_instance = vlc.get_default_instance()
 vlc_player = vlc_instance.media_player_new()
 volume = 100
 
-def play_music(level):
+def change_volume(level):
     volume = level
     if vlc_player.get_state() == vlc.State.Playing:        
         vlc_player.audio_set_volume(volume)
@@ -71,13 +71,16 @@ def process_event(assistant, event):
             print('ENTER VLC ASSISTANT PROCESS')
             assistant.stop_conversation()
             play_music(text[5:])
-        if text.startswith('change le volume à '):
-            print('ENTER VLC ASSISTANT PROCESS')
+        elif text.startswith('change le volume à '):
+            print('ENTER VLC CHANGE LEVEL')
             assistant.stop_conversation()
             change_volume(text[5:])
-        if text.startswith('stop la musique'):
+        elif text.startswith('stoppe la musique'):
             assistant.stop_conversation()
             print('STOP CURRENT PLAYBACK ON VLC')
+            if vlc_player.get_state() == vlc.State.Playing:
+                vlc_player.stop()
+        else:
             if vlc_player.get_state() == vlc.State.Playing:
                 vlc_player.stop()
 
