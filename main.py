@@ -2,9 +2,12 @@
 
 from __future__ import print_function
 
+import re
 import argparse
 import os.path
 import json
+import vlc
+import youtube_dl
 
 import google.oauth2.credentials
 from google.assistant.library import Assistant
@@ -12,7 +15,31 @@ from google.assistant.library.event import EventType
 from google.assistant.library.file_helpers import existing_file
 
 
-def process_event(event):
+ydl_opts = {
+    'default_search': 'ytsearch1:',
+    'format': 'bestaudio/best',
+    'noplaylist': True,
+    'quiet': True
+}
+vlc_instance = vlc.get_default_instance()
+vlc_player = vlc_instance.media_player_new()
+
+
+def play_music(name):
+    try:
+        with youtube_dl.YoutubeDL(ydl_opts) as ydl:
+            meta = ydl.extract_info(name, download=False)
+    except Exception:
+        print('Sorry, I can\'t find that song.')
+        return
+
+    if meta:
+        info = meta['entries'][0]
+        vlc_player.set_media(vlc_instance.media_new(info['url']))
+        print('Now playing ' + re.sub(r'[^\s\w]', '', info['title']))
+        vlc_player.play()
+
+def process_event(assistant, event):
     """Pretty prints events.
     Prints all events that occur with two spaces between each new
     conversation and a single space between turns of a conversation.
@@ -28,6 +55,13 @@ def process_event(event):
             event.args and not event.args['with_follow_on_turn']):
         print()
 
+    if event.type == EventType.ON_RECOGNIZING_SPEECH_FINISHED and event.args:
+        print('You said:', event.args['text'])
+        text = event.args['text'].lower()
+        if text.startswith('joue '):
+            print('ENTER VLC ASSISTANT PROCESS')
+            assistant.stop_conversation()
+            play_music(text[5:])
 
 def main():
     parser = argparse.ArgumentParser(
@@ -47,7 +81,7 @@ def main():
 
     with Assistant(credentials, 'Raspberry') as assistant:
         for event in assistant.start():
-            process_event(event)
+            process_event(assistant, event)
 
 
 if __name__ == '__main__':
